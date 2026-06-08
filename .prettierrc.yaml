@@ -1,0 +1,13 @@
+# Managed by https://github.com/blackoutsecure/bos-automation-hub —
+# do not edit. To modify, update the `prettier` service in
+# .github/actions/sync-managed-files/sync.py.
+#
+semi: true
+singleQuote: true
+trailingComma: all
+printWidth: 100
+tabWidth: 2
+useTabs: false
+arrowParens: always
+bracketSpacing: true
+endOfLine: lf

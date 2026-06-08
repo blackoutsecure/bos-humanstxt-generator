@@ -1,0 +1,9 @@
+{
+  "inputs": {
+    "generate_humans_txt": "true",
+    "humans_output_dir": "dist",
+    "humans_filename": "humans.txt",
+    "humans_comments": "true",
+    "debug_show_humans": "false"
+  }
+}

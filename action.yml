@@ -1,0 +1,75 @@
+name: 'Blackout Secure Humans TXT Generator'
+description: 'Generate standards-compliant humans.txt to credit the people and tools behind your site. Automated deployment with GitHub Actions.'
+author: 'Blackout Secure'
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
+inputs:
+  generate_humans_txt:
+    description: 'Enable or disable humans.txt generation.'
+    required: false
+    default: 'true'
+  humans_output_dir:
+    description: 'Directory to write humans.txt. Defaults to dist.'
+    required: false
+    default: 'dist'
+  humans_filename:
+    description: 'Filename for humans.txt. Should be served from your site root.'
+    required: false
+    default: 'humans.txt'
+  humans_comments:
+    description: 'Include humanstxt.org reference comments at the top of the file.'
+    required: false
+    default: 'true'
+  humans_team_name:
+    description: 'TEAM section: Name of team member or organization.'
+    required: false
+  humans_team_title:
+    description: 'TEAM section: Job title or role.'
+    required: false
+  humans_team_contact:
+    description: 'TEAM section: Contact information (email, social handle, etc.).'
+    required: false
+  humans_team_location:
+    description: 'TEAM section: Location (city, country, or remote).'
+    required: false
+  humans_thanks_name:
+    description: 'THANKS section: Person or organization to thank.'
+    required: false
+  humans_thanks_url:
+    description: 'THANKS section: URL for the person or organization being thanked.'
+    required: false
+  humans_site_last_update:
+    description: 'SITE section: Last update date (YYYY/MM/DD). Auto-filled with today when omitted.'
+    required: false
+  humans_site_standards:
+    description: 'SITE section: Standards used (e.g., HTML5, CSS3).'
+    required: false
+  humans_site_components:
+    description: 'SITE section: Components or frameworks used (e.g., React, Astro).'
+    required: false
+  humans_site_software:
+    description: 'SITE section: Software used to build the site (e.g., Node.js, Vite).'
+    required: false
+  humans_site_language:
+    description: 'SITE section: Primary language of the site.'
+    required: false
+  humans_site_doctype:
+    description: 'SITE section: Document type (e.g., HTML5).'
+    required: false
+  humans_site_ide:
+    description: 'SITE section: IDE or editor used.'
+    required: false
+  debug_show_humans:
+    description: 'Debug: print the generated humans.txt content to the log.'
+    required: false
+    default: 'false'
+  prefer_company_name:
+    description: 'Optional sponsor/company name to display in the footer.'
+    required: false
+outputs:
+  humans_path:
+    description: 'Path to the generated humans.txt file.'
+branding:
+  color: 'blue'
+  icon: 'users'

@@ -1,0 +1,5 @@
+{
+  "sync_files": {
+    "services": ["common", "lf_line_endings"]
+  }
+}
