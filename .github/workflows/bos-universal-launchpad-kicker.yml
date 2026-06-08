@@ -33,6 +33,11 @@ on:
       - '.github/workflows/bos-universal-launchpad-kicker.yml'
   workflow_dispatch:
     inputs:
+      target_branch:
+        description: 'Branch to run the launchpad workflow on'
+        type: choice
+        options: [dev, main]
+        default: dev
       force_run:
         description: 'Force: run pipeline even if upstream unchanged'
         type: boolean
@@ -49,6 +54,7 @@ permissions:
 jobs:
   parse-config:
     name: Parse launchpad config
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.target_branch == github.ref_name }}
     # Resolve runner from org-shared `vars.DEFAULT_RUNNER` when set,
     # supporting both bare label and JSON-array formats. Fallback to
     # `ubuntu-latest` if the variable is not defined in the consumer.
