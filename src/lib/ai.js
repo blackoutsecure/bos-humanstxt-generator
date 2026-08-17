@@ -14,6 +14,11 @@ const GITHUB_MODELS_ENDPOINT = 'https://models.github.ai/inference/chat/completi
 const GITHUB_PROVIDER_ALIASES = ['auto', 'github', 'github-models', 'copilot'];
 const DISABLED_ALIASES = ['none', 'disabled', 'false', 'off'];
 
+function httpsEndpoint(value) {
+  const endpoint = String(value || '').trim();
+  return endpoint.startsWith('https://') ? endpoint : '';
+}
+
 /**
  * Select an AI provider from configuration and the ambient environment.
  * @param {string} [configured] - Configured provider name.
@@ -29,11 +34,12 @@ function detectProvider(configured = '', environ = process.env) {
   if (DISABLED_ALIASES.includes(name)) return null;
 
   if (GITHUB_PROVIDER_ALIASES.includes(name)) {
-    const token = env.GITHUB_MODELS_TOKEN || env.GITHUB_TOKEN;
-    if (token) {
+    const token = env.GITHUB_MODELS_TOKEN || env.GH_TOKEN || env.GITHUB_TOKEN;
+    const endpoint = httpsEndpoint(env.GITHUB_MODELS_ENDPOINT || GITHUB_MODELS_ENDPOINT);
+    if (token && endpoint) {
       return {
         name: 'github-models',
-        endpoint: env.GITHUB_MODELS_ENDPOINT || GITHUB_MODELS_ENDPOINT,
+        endpoint,
         model:
           env.GITHUB_MODELS_MODEL_HUMANS_TXT || env.GITHUB_MODELS_MODEL || 'openai/gpt-4o-mini',
         token,
@@ -44,7 +50,7 @@ function detectProvider(configured = '', environ = process.env) {
 
   const prefix = name.toUpperCase().replace(/-/g, '_');
   const token = env[`${prefix}_API_KEY`] || env.AI_API_KEY;
-  const endpoint = env[`${prefix}_API_ENDPOINT`] || env.AI_API_ENDPOINT;
+  const endpoint = httpsEndpoint(env[`${prefix}_API_ENDPOINT`] || env.AI_API_ENDPOINT);
   if (token && endpoint) {
     return { name, endpoint, model: env[`${prefix}_MODEL`] || '', token };
   }
