@@ -58,7 +58,7 @@ function getHumansTxtHeader() {
 /* Issues: https://${repository.issuesUrl} */
 /*  */
 /* humanstxt.org - We are people, not machines */
-/* Standard: http://humanstxt.org */
+/* Standard: https://humanstxt.org */
 /* Recommended location: /humans.txt */`;
 }
 

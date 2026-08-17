@@ -11,7 +11,7 @@ module.exports = [
   {
     files: ['**/*.js'],
     languageOptions: {
-      ecmaVersion: 2021,
+      ecmaVersion: 2022,
       sourceType: 'commonjs',
       globals: {
         // Node.js globals
@@ -24,6 +24,10 @@ module.exports = [
         console: 'readonly',
         Buffer: 'readonly',
         URL: 'readonly',
+        // Node 20 web-platform globals
+        fetch: 'readonly',
+        AbortController: 'readonly',
+        structuredClone: 'readonly',
         setTimeout: 'readonly',
         setInterval: 'readonly',
         clearTimeout: 'readonly',

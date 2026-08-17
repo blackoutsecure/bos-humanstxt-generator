@@ -5,6 +5,9 @@
   "description": "Generate humans.txt for your site directly from a GitHub Action.",
   "author": "Blackout Secure <https://github.com/blackoutsecure>",
   "main": "dist/index.js",
+  "bin": {
+    "bos-humanstxt": "src/cli.js"
+  },
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -24,6 +27,7 @@
   ],
   "scripts": {
     "build": "ncc build src/index.js -o dist",
+    "cli": "node src/cli.js",
     "prebuild": "npm run validate",
     "prepare": "npm run build",
     "clean": "node -e \"const fs=require('fs');['dist','coverage'].forEach(p=>fs.rmSync(p,{recursive:true,force:true}));\"",
@@ -41,7 +45,8 @@
     "check": "npm run verify"
   },
   "dependencies": {
-    "@actions/core": "^1.11.1"
+    "@actions/core": "^1.11.1",
+    "js-yaml": "^4.3.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

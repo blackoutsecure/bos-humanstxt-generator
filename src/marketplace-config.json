@@ -1,0 +1,49 @@
+{
+  "humans_txt": {
+    "author": "auto",
+    "generate": {
+      "include_comments": true,
+      "filename": "humans.txt",
+      "output_dir": "dist"
+    },
+    "fields": {
+      "team": [],
+      "thanks": [],
+      "site": {}
+    },
+    "audit": {
+      "enable": true,
+      "fail_on": "fail",
+      "max_size_kb": 16,
+      "max_age_days": 365,
+      "rules": {
+        "require_team_section": "warn",
+        "require_site_section": "warn",
+        "require_thanks_section": "skip",
+        "require_team_contact": "warn",
+        "require_https_urls": "warn",
+        "valid_last_update": "warn",
+        "last_update_freshness": "warn",
+        "forbid_placeholder_values": "warn",
+        "forbid_email_addresses": "skip",
+        "no_duplicate_team_entries": "warn",
+        "site_root_location": "warn",
+        "file_size_limit": "warn",
+        "require_html_link": "skip",
+        "require_utf8_no_bom": "warn",
+        "valid_section_syntax": "warn"
+      }
+    },
+    "reporting": {
+      "step_summary": true,
+      "sarif": true,
+      "json_report": true,
+      "recommendations": true
+    },
+    "remediation": {
+      "enable_ai_findings_summary": true,
+      "ai_findings_summary_provider": "auto",
+      "local_heuristic_fallback": true
+    }
+  }
+}

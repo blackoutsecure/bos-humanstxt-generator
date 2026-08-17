@@ -10,19 +10,20 @@ inputs:
     required: false
     default: 'true'
   humans_output_dir:
-    description: 'Directory to write humans.txt. Defaults to dist.'
+    description: 'Directory to write humans.txt. Leave empty to use `humans_txt.generate.output_dir` from config (default: dist).'
     required: false
-    default: 'dist'
   humans_filename:
-    description: 'Filename for humans.txt. Should be served from your site root.'
+    description: 'Filename for humans.txt. Should be served from your site root. Leave empty to use `humans_txt.generate.filename` from config.'
     required: false
-    default: 'humans.txt'
   humans_comments:
-    description: 'Include humanstxt.org reference comments at the top of the file.'
+    description: 'Include humanstxt.org reference comments at the top of the file. Leave empty to use `humans_txt.generate.include_comments` from config.'
     required: false
-    default: 'true'
+  humans_author:
+    description: 'Author credited in the TEAM section. `auto` (default) asks the AI provider to identify the author from package.json, LICENSE/NOTICE, README, and the repository owner, falling back to those signals directly when no provider is available. Set an explicit name to skip AI entirely, or `none` to disable. Only used when no other TEAM name is supplied.'
+    required: false
+    default: 'auto'
   humans_team_name:
-    description: 'TEAM section: Name of team member or organization.'
+    description: 'TEAM section: Name of team member or organization. Prepended to any `humans_txt.fields.team` entries from config.'
     required: false
   humans_team_title:
     description: 'TEAM section: Job title or role.'
@@ -67,9 +68,83 @@ inputs:
   prefer_company_name:
     description: 'Optional sponsor/company name to display in the footer.'
     required: false
+  config_path:
+    description: 'Explicit repository config file. Leave empty to auto-discover `.github/bos-universal-config.json|yml`, `bos-universal-config.*`, or `.bos-humanstxt.yml` under the workspace root.'
+    required: false
+  global_config_path:
+    description: 'Organization-level global config path, merged beneath the repository config.'
+    required: false
+    default: '.github/blackout-secure-humanstxt-generator-global-config.yml'
+  use_global_config:
+    description: 'Global config tier: auto (load when present), true (require it), or false (disable discovery).'
+    required: false
+    default: 'auto'
+  use_marketplace_config:
+    description: 'Apply the bundled marketplace baseline config as the lowest precedence tier.'
+    required: false
+    default: 'true'
+  enable_audit:
+    description: 'Run the humanstxt.org compliance audit after generation. Rule severities come from `humans_txt.audit.rules` in config.'
+    required: false
+    default: 'true'
+  audit_fail_on:
+    description: 'Audit exit policy: fail (non-zero on any fail/error finding) or never. Leave empty to use `humans_txt.audit.fail_on` from config.'
+    required: false
+  sarif_output:
+    description: 'Path to write audit findings as SARIF 2.1.0 for GitHub code scanning upload. Empty disables SARIF output.'
+    required: false
+  report_json:
+    description: 'Path to write the machine-readable JSON audit report. Empty disables the report.'
+    required: false
+  recommendations_json:
+    description: 'Path to write structured remediation recommendations for non-pass findings. Empty disables the sidecar.'
+    required: false
+  skips_json:
+    description: 'Path to write the skipped-controls sidecar. SARIF drops `skip` findings, so this is the only machine-readable record of unassessed controls.'
+    required: false
+  step_summary:
+    description: 'Append the Markdown audit report to $GITHUB_STEP_SUMMARY.'
+    required: false
+    default: 'true'
+  enable_ai_summary:
+    description: 'Generate a short natural-language findings summary. Falls back to a deterministic local summary when no provider is available.'
+    required: false
+    default: 'true'
+  ai_provider:
+    description: 'AI summary provider: auto (GitHub Models when a token is present), none, or a named provider backed by <NAME>_API_KEY and <NAME>_API_ENDPOINT.'
+    required: false
+    default: 'auto'
 outputs:
   humans_path:
     description: 'Path to the generated humans.txt file.'
+  author:
+    description: 'Author credited in the TEAM section, after `auto` resolution.'
+  author_source:
+    description: 'How the author was resolved: explicit, ai:<provider>, repository-signals, unresolved, or disabled.'
+  team_entry_count:
+    description: 'Number of TEAM entries written to the file.'
+  config_sources:
+    description: 'Comma-separated list of the applied config tiers, in precedence order.'
+  audit_verdict:
+    description: 'Overall audit verdict: Pass, Review recommended, Action required, Inconclusive, or Not assessed.'
+  audit_pass_count:
+    description: 'Number of audit controls that passed.'
+  audit_warn_count:
+    description: 'Number of audit controls that produced a warning.'
+  audit_fail_count:
+    description: 'Number of audit controls that failed.'
+  audit_error_count:
+    description: 'Number of audit controls that could not be evaluated.'
+  audit_skip_count:
+    description: 'Number of audit controls that were not assessed.'
+  sarif_path:
+    description: 'Path to the written SARIF file, when sarif_output is set.'
+  report_json_path:
+    description: 'Path to the written JSON audit report, when report_json is set.'
+  recommendations_json_path:
+    description: 'Path to the written recommendations sidecar, when recommendations_json is set.'
+  ai_summary:
+    description: 'Short natural-language summary of the audit findings.'
 branding:
   color: 'blue'
   icon: 'users'

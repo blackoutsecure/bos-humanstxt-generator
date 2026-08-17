@@ -1,9 +1,6 @@
 {
   "sync_files": {
-    "services": [
-      "common",
-      "lf_line_endings"
-    ]
+    "services": ["common", "lf_line_endings"]
   },
   "sync_managed_files": false
 }

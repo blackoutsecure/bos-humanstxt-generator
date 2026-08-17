@@ -33,8 +33,12 @@ const { getHumansTxtHeader } = require('./project-config');
 function buildHumansTxt(options = {}) {
   const { team = {}, thanks = {}, site = {}, includeComments = false } = options;
 
+  // TEAM and THANKS accept either a single mapping (legacy) or a list.
+  const teamEntries = toEntryList(team);
+  const thanksEntries = toEntryList(thanks);
+
   const hasSections =
-    Object.keys(team).length > 0 || Object.keys(thanks).length > 0 || Object.keys(site).length > 0;
+    teamEntries.length > 0 || thanksEntries.length > 0 || Object.keys(site).length > 0;
 
   // If there is no content and comments are not requested, return empty output
   if (!hasSections && !includeComments) {
@@ -56,20 +60,26 @@ function buildHumansTxt(options = {}) {
   }
 
   // TEAM Section
-  if (Object.keys(team).length > 0) {
+  if (teamEntries.length > 0) {
     lines.push('/* TEAM */');
-    if (team.name) lines.push(`  Name: ${team.name}`);
-    if (team.title) lines.push(`  Title: ${team.title}`);
-    if (team.contact) lines.push(`  Contact: ${team.contact}`);
-    if (team.location) lines.push(`  Location: ${team.location}`);
+    teamEntries.forEach((member, index) => {
+      if (index > 0) lines.push('');
+      if (member.name) lines.push(`  Name: ${member.name}`);
+      if (member.title) lines.push(`  Title: ${member.title}`);
+      if (member.contact) lines.push(`  Contact: ${member.contact}`);
+      if (member.location) lines.push(`  Location: ${member.location}`);
+    });
     lines.push('');
   }
 
   // THANKS Section
-  if (Object.keys(thanks).length > 0) {
+  if (thanksEntries.length > 0) {
     lines.push('/* THANKS */');
-    if (thanks.name) lines.push(`  ${thanks.name}`);
-    if (thanks.url) lines.push(`  ${thanks.url}`);
+    thanksEntries.forEach((entry, index) => {
+      if (index > 0) lines.push('');
+      if (entry.name) lines.push(`  ${entry.name}`);
+      if (entry.url) lines.push(`  ${entry.url}`);
+    });
     lines.push('');
   }
 
@@ -124,7 +134,90 @@ function parseHumansConfig(inputs) {
   return config;
 }
 
+/**
+ * Normalise a single mapping or a list of mappings into a list of entries.
+ * @param {object|object[]} value - Raw section value.
+ * @returns {object[]} Entries with at least one populated field.
+ */
+function toEntryList(value) {
+  const entries = Array.isArray(value) ? value : [value];
+  return entries.filter(
+    (entry) => entry && typeof entry === 'object' && Object.keys(entry).length > 0,
+  );
+}
+
+/**
+ * Parse humans.txt content into sections for auditing.
+ *
+ * Content lines are grouped under the most recent section banner (TEAM,
+ * THANKS, or SITE); lines appearing before any banner are reported as
+ * orphans so the audit can flag malformed files.
+ *
+ * @param {string} content - Raw humans.txt content.
+ * @returns {object} `{ sections, orphanLines, hasBom }`
+ */
+function parseHumansTxt(content = '') {
+  const hasBom = content.charCodeAt(0) === 0xfeff;
+  const body = hasBom ? content.slice(1) : content;
+
+  const sections = {};
+  const orphanLines = [];
+  let current = null;
+
+  body.split(/\r?\n/).forEach((rawLine, index) => {
+    const line = rawLine.trim();
+    if (!line) return;
+
+    const banner = line.match(/^\/\*\s*(.+?)\s*\*\/$/);
+    if (banner) {
+      const name = banner[1].toUpperCase();
+      // Only the three standard banners open a section; anything else
+      // (the generator header, `humanstxt.org`) is a plain comment.
+      if (['TEAM', 'THANKS', 'SITE'].includes(name)) {
+        current = name;
+        sections[current] ||= [];
+      } else {
+        current = null;
+      }
+      return;
+    }
+
+    if (current) sections[current].push(line);
+    else orphanLines.push({ line: index + 1, text: line });
+  });
+
+  return { sections, orphanLines, hasBom };
+}
+
+/**
+ * Split a TEAM section body into per-member records.
+ * @param {string[]} lines - Content lines under the TEAM banner.
+ * @returns {object[]} One record per member, keyed by lowercased field.
+ */
+function parseTeamEntries(lines = []) {
+  const entries = [];
+  let current = {};
+
+  for (const line of lines) {
+    const match = line.match(/^([A-Za-z][A-Za-z ]*?)\s*:\s*(.+)$/);
+    if (!match) continue;
+    const key = match[1].trim().toLowerCase();
+    // A repeated `Name:` starts the next member record.
+    if (key === 'name' && Object.keys(current).length) {
+      entries.push(current);
+      current = {};
+    }
+    current[key] = match[2].trim();
+  }
+
+  if (Object.keys(current).length) entries.push(current);
+  return entries;
+}
+
 module.exports = {
   buildHumansTxt,
   parseHumansConfig,
+  parseHumansTxt,
+  parseTeamEntries,
+  toEntryList,
 };
