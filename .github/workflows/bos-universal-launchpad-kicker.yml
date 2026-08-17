@@ -42,12 +42,6 @@ on:
         description: 'Force: run pipeline even if upstream unchanged'
         type: boolean
         default: false
-      sync_mode:
-        description: 'Sync mode for integrated managed-files stage'
-        type: choice
-        options: [commit, check]
-        default: commit
-
 permissions:
   contents: read
 
@@ -203,8 +197,6 @@ jobs:
 
       # ----- Universal kicker wiring -----
       use_launchpad_config: true
-      sync_managed_files: ${{ fromJson(needs.parse-config.outputs.cfg).sync_managed_files != false }}
-      sync_mode: ${{ github.event_name == 'workflow_dispatch' && inputs.sync_mode || '' }}
 
       # ----- Optional stages configured from data file -----
       enable_security_scan:         ${{ fromJson(needs.parse-config.outputs.cfg).security_scan.enable == true }}
