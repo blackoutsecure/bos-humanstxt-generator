@@ -1,54 +1,20 @@
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-.eslintcache
-.cache/
+# Repo-specific ignores. The hub's `common` block covers OS/editor
+# noise, secrets, logs, and archives; the `node_ecosystem` service
+# covers npm/yarn debug logs and test-output artefacts.
+
+# Dependency lockfiles ignored — this repo does not pin them
 yarn.lock
 pnpm-lock.yaml
 
+# Build & distribution
 public/
 
-.env.local
-.env.*.local
-*.pem
-*.key
-
-.vscode/
-*.sublime-project
-*.sublime-workspace
-*.swo
-*~
-.project
-.classpath
-.settings/
-.vs/
-
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Desktop.ini
-$RECYCLE.BIN/
-
-logs/
-*.log
-*.out
-*.pid
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
-
-.nyc_output/
-*.lcov
-test-results/
-.test-output/
-
+# GitHub Actions local testing
 .act/
 act-*.json
+bin/act
 
+# Generated output files (product-specific)
 !dist/*.html
 !dist/*.txt
 !dist/*.xml
@@ -61,23 +27,8 @@ humans.txt
 security.txt
 .well-known/security.txt
 .well-known/
-
 test-public/
-*.tmp
-*.bak
-*.orig
 *.old
-
-*.egg
-*.egg-info/
-
-*.zip
-*.tar
-*.tar.gz
-*.7z
-*.rar
-*.iso
-bin/act
 
 !event.json
 !test/event.json
