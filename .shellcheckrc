@@ -1,0 +1,5 @@
+# >>> managed-file-sync:shellcheck >>>
+shell=bash
+disable=SC2016,SC1091
+external-sources=true
+# <<< managed-file-sync:shellcheck <<<
