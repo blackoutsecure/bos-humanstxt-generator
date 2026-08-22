@@ -15,11 +15,45 @@
   "marketplace": {
     "enabled": true,
     "target_branch": "main",
-    "allowlist_paths": ["action.yml", "dist", "src", "README.md", "LICENSE", "NOTICE", "package.json", "package-lock.json"],
-    "blocked_paths": [".github/workflows/", ".editorconfig", ".gitattributes", ".gitignore", ".markdownlint.yaml", ".shellcheckrc", ".yamllint.yml", "test/"],
-    "required_paths": [".github/dependabot.yml", "action.yml", "dist", "README.md", "LICENSE", "NOTICE", "package.json", "package-lock.json"],
+    "allowlist_paths": [
+      "action.yml",
+      "dist",
+      "src",
+      "README.md",
+      "LICENSE",
+      "NOTICE",
+      "package.json",
+      "package-lock.json"
+    ],
+    "blocked_paths": [
+      ".github/workflows/",
+      ".editorconfig",
+      ".gitattributes",
+      ".gitignore",
+      ".markdownlint.yaml",
+      ".shellcheckrc",
+      ".yamllint.yml",
+      "test/"
+    ],
+    "required_paths": [
+      ".github/dependabot.yml",
+      "action.yml",
+      "dist",
+      "README.md",
+      "LICENSE",
+      "NOTICE",
+      "package.json",
+      "package-lock.json"
+    ],
     "include_dependabot_config": true,
     "include_github_metadata": false,
-    "repo_metadata": {"enable": true, "homepage": "https://github.com/marketplace/actions/blackout-secure-humans-txt-generator", "use_existing_readme": true, "generate_readme": false, "generate_topics": true, "topics_fallback": "github-actions humans-txt metadata static-site composite-action"}
+    "repo_metadata": {
+      "enable": true,
+      "homepage": "https://github.com/marketplace/actions/blackout-secure-humans-txt-generator",
+      "use_existing_readme": true,
+      "generate_readme": false,
+      "generate_topics": true,
+      "topics_fallback": "github-actions humans-txt metadata static-site composite-action"
+    }
   }
 }
