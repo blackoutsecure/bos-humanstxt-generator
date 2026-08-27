@@ -1,7 +1,5 @@
 {
-  "general": {
-    "target_repo_role": "action-repository"
-  },
+  "target_repo_role": "action-repository",
   "managed_file_sync": {
     "mode": "commit",
     "services": [
