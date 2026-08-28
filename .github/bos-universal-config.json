@@ -5,9 +5,6 @@
     "services": [
       "common",
       "lf_line_endings",
-      "bos_universal_security_kicker",
-      "bos_universal_sync_kicker",
-      "bos_universal_marketplace_kicker",
       "node_ecosystem"
     ]
   },
