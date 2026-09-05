@@ -1,12 +1,11 @@
 {
+  "triggers": {
+    "push_paths": ["action.yml", "src/**", "dist/**", "test/**", "package.json"]
+  },
   "target_repo_role": "action-repository",
   "managed_file_sync": {
     "mode": "commit",
-    "services": [
-      "common",
-      "lf_line_endings",
-      "node_ecosystem"
-    ]
+    "services": ["common", "lf_line_endings", "node_ecosystem"]
   },
   "marketplace": {
     "enabled": true,
