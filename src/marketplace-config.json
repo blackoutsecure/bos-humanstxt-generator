@@ -40,6 +40,11 @@
       "json_report": true,
       "recommendations": true
     },
+    "redaction": {
+      "enabled": true,
+      "placeholder": "***",
+      "extra_patterns": []
+    },
     "remediation": {
       "enable_ai_findings_summary": true,
       "ai_findings_summary_provider": "auto",

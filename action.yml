@@ -96,6 +96,14 @@ inputs:
   report_json:
     description: 'Path to write the machine-readable JSON audit report. Empty disables the report.'
     required: false
+  redact_sensitive:
+    description: 'Redact credential-shaped values from console and report surfaces. Leave empty to use redaction.enabled from config.'
+    required: false
+    default: ''
+  redaction_placeholder:
+    description: 'Replacement text for redacted values. Leave empty to use redaction.placeholder from config.'
+    required: false
+    default: ''
   recommendations_json:
     description: 'Path to write structured remediation recommendations for non-pass findings. Empty disables the sidecar.'
     required: false

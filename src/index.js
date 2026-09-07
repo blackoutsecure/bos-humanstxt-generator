@@ -102,6 +102,11 @@ async function run() {
     }
 
     const pkg = packageMetadata();
+    const redaction = {
+      enabled: boolInput('redact_sensitive', cfg.redaction.enabled),
+      placeholder: core.getInput('redaction_placeholder') || cfg.redaction.placeholder,
+      extraPatterns: cfg.redaction.extraPatterns,
+    };
     core.info(`⚙️  ${pkg.name} v${pkg.version}`);
     core.info('   Config cascade:');
     for (const source of cfg.sourcePaths) {
@@ -234,7 +239,7 @@ async function run() {
         outputDir: humansOutputDir,
       });
 
-      reportMod.printAuditTable(core, auditResult);
+      reportMod.printAuditTable(core, auditResult, redaction);
 
       const failOnInput = (core.getInput('audit_fail_on') || '').trim();
       const failOn = cfgMod.FAIL_ON_LEVELS.includes(failOnInput) ? failOnInput : cfg.audit.failOn;
@@ -244,7 +249,7 @@ async function run() {
         );
       }
       const failRun = auditMod.shouldFail(auditResult, failOn);
-      reportMod.annotate(core, auditResult, failRun);
+      reportMod.annotate(core, auditResult, failRun, redaction);
 
       const remediation = {
         ...cfg.remediation,
@@ -260,7 +265,7 @@ async function run() {
         core.info('');
         core.info(`🤖 Findings summary (${summary.provider}):`);
         for (const line of summary.text.split('\n')) {
-          core.info(`   ${line}`);
+          core.info(`   ${reportMod.redactSensitive(line, redaction)}`);
         }
       }
 
@@ -283,12 +288,17 @@ async function run() {
       const reportPath = core.getInput('report_json') || '';
       if (cfg.reporting.jsonReport && reportPath) {
         try {
-          reportMod.writeJsonReport(auditResult, reportPath, {
-            ai_summary: summary.text,
-            ai_provider: summary.provider,
-            config_sources: [...cfg.sourcePaths],
-            package: pkg,
-          });
+          reportMod.writeJsonReport(
+            auditResult,
+            reportPath,
+            {
+              ai_summary: reportMod.redactSensitive(summary.text, redaction),
+              ai_provider: summary.provider,
+              config_sources: [...cfg.sourcePaths],
+              package: pkg,
+            },
+            redaction,
+          );
           core.info(`   ✓ JSON report written: ${reportPath}`);
           core.setOutput('report_json_path', reportPath);
         } catch (err) {
@@ -299,7 +309,7 @@ async function run() {
       const recommendationsPath = core.getInput('recommendations_json') || '';
       if (cfg.reporting.recommendations && recommendationsPath) {
         try {
-          reportMod.writeRecommendations(auditResult, recommendationsPath);
+          reportMod.writeRecommendations(auditResult, recommendationsPath, redaction);
           core.info(`   ✓ Recommendations written: ${recommendationsPath}`);
           core.setOutput('recommendations_json_path', recommendationsPath);
         } catch (err) {
@@ -310,7 +320,7 @@ async function run() {
       const skipsPath = core.getInput('skips_json') || '';
       if (skipsPath) {
         try {
-          reportMod.writeSkips(auditResult, skipsPath);
+          reportMod.writeSkips(auditResult, skipsPath, redaction);
           core.info(`   ✓ Skips written: ${skipsPath}`);
         } catch (err) {
           core.warning(`   ⚠️  Failed to write skips: ${err.message}`);
@@ -321,6 +331,7 @@ async function run() {
         reportMod.writeStepSummary(auditResult, {
           aiSummary: summary.text,
           aiProvider: summary.provider,
+          redaction,
         });
       }
 
@@ -331,7 +342,7 @@ async function run() {
       core.setOutput('audit_fail_count', String(totals.fail));
       core.setOutput('audit_error_count', String(totals.error));
       core.setOutput('audit_skip_count', String(totals.skip));
-      core.setOutput('ai_summary', summary.text);
+      core.setOutput('ai_summary', reportMod.redactSensitive(summary.text, redaction));
     } else {
       core.info('');
       core.info('👥 humans.txt Audit: Disabled');
