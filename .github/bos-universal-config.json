@@ -5,7 +5,8 @@
   "target_repo_role": "action-repository",
   "managed_file_sync": {
     "mode": "commit",
-    "services": ["common", "lf_line_endings", "node_ecosystem"]
+    "services": ["common", "lf_line_endings", "node_ecosystem"],
+    "disabled_services": ["dependabot_pip"]
   },
   "marketplace": {
     "enabled": true,
